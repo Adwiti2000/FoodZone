@@ -37,25 +37,20 @@ public class LoginActivity extends AppCompatActivity {
         View view = activityLoginBinding.getRoot();
         setContentView(view);
         lAuth = FirebaseAuth.getInstance();
-        activityLoginBinding.sendOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String country_code = activityLoginBinding.enterCountryCode.getText().toString();
-                String phone = activityLoginBinding.enterPhone.getText().toString();
-                String phoneNumber = "+" + country_code + "" + phone;
-                if (!country_code.isEmpty() || !phone.isEmpty()) {
-                    PhoneAuthOptions options = PhoneAuthOptions.newBuilder(lAuth)
-                            .setPhoneNumber(phoneNumber)
-                            .setTimeout(60L, TimeUnit.SECONDS)
-                            .setActivity(LoginActivity.this)
-                            .setCallbacks(mCallBacks)
-                            .build();
-                    PhoneAuthProvider.verifyPhoneNumber(options);
-                } else {
-                    activityLoginBinding.desText.setText("Please enter code and phone number");
-                    activityLoginBinding.desText.setTextColor(Color.RED);
-                    activityLoginBinding.desText.setVisibility(View.VISIBLE);
-                }
+        activityLoginBinding.sendOtp.setOnClickListener(v -> {
+            String countryCode = activityLoginBinding.enterCountryCode.getText().toString();
+            String phone = activityLoginBinding.enterPhone.getText().toString();
+            String phoneNumber = "+" + countryCode + "" + phone;
+            if (!countryCode.isEmpty() || !phone.isEmpty()) {
+                PhoneAuthOptions options = PhoneAuthOptions.newBuilder(lAuth)
+                        .setPhoneNumber(phoneNumber)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(LoginActivity.this)
+                        .setCallbacks(mCallBacks)
+                        .build();
+                PhoneAuthProvider.verifyPhoneNumber(options);
+            } else {
+                Toast.makeText(this, "Phone Number and Country Code can't be empty", Toast.LENGTH_SHORT).show();
             }
         });
         mCallBacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -66,19 +61,16 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                activityLoginBinding.desText.setText(e.getMessage());
-                activityLoginBinding.desText.setTextColor(Color.RED);
-                activityLoginBinding.desText.setVisibility(View.VISIBLE);
+                Toast.makeText(LoginActivity.this, "Verification Failed!" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
-                activityLoginBinding.desText.setText("OTP has been Sent");
-                activityLoginBinding.desText.setVisibility(View.VISIBLE);
+                activityLoginBinding.sendOtp.setText("OTP Sent");
+                activityLoginBinding.sendOtp.setEnabled(false);
                 new Handler().postDelayed(() -> {
                     Intent otpIntent = new Intent(LoginActivity.this, OtpActivity.class);
-                    Log.d(TAG, "String OTP: " + s);
                     otpIntent.putExtra("auth", s);
                     startActivity(otpIntent);
                 }, 10000);

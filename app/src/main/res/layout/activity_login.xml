@@ -5,25 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
+
+    <TextView
+        android:id="@+id/desText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_marginTop="250dp"
+        android:text="Please Enter Country Code\n       and Phone Number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <EditText
         android:id="@+id/enterCountryCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="code"
-        app:layout_constraintRight_toRightOf="@id/enterPhone"
+        android:text="+91"
+        app:layout_constraintRight_toLeftOf="@id/enterPhone"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:inputType="number"
+        app:layout_constraintTop_toTopOf="@id/enterPhone"/>
+
     <EditText
         android:id="@+id/enterPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Phone Number"
+        android:inputType="phone"
+        android:layout_marginTop="20dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintLeft_toRightOf="@id/enterCountryCode"
+        app:layout_constraintTop_toBottomOf="@id/desText"/>
+
+
     <Button
         android:id="@+id/sendOtp"
         android:layout_width="wrap_content"
@@ -33,12 +48,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="11dp"
         android:text="Get OTP"/>
-    <EditText
-        android:id="@+id/desText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/enterPhone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
