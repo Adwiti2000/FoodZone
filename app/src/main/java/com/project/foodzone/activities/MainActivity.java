@@ -1,4 +1,4 @@
-package com.project.foodzone;
+package com.project.foodzone.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,11 +8,13 @@ import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.project.foodzone.activities.authentication.LoginActivity;
 import com.project.foodzone.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
  ActivityMainBinding activityMainBinding;
  private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
     @Override
     protected void onStart(){

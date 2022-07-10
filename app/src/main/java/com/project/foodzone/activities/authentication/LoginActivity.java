@@ -1,4 +1,4 @@
-package com.project.foodzone;
+package com.project.foodzone.activities.authentication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,7 +19,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.project.foodzone.activities.MainActivity;
 import com.project.foodzone.databinding.ActivityLoginBinding;
+import com.project.foodzone.models.User;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth lAuth;
     private static final String TAG = "Login Activity";
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
+    String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         activityLoginBinding.sendOtp.setOnClickListener(v -> {
             String countryCode = activityLoginBinding.enterCountryCode.getText().toString();
             String phone = activityLoginBinding.enterPhone.getText().toString();
-            String phoneNumber = "+" + countryCode + "" + phone;
+            phoneNumber = "+" + countryCode + "" + phone;
             if (!countryCode.isEmpty() || !phone.isEmpty()) {
                 PhoneAuthOptions options = PhoneAuthOptions.newBuilder(lAuth)
                         .setPhoneNumber(phoneNumber)
@@ -69,9 +72,13 @@ public class LoginActivity extends AppCompatActivity {
                 super.onCodeSent(s, forceResendingToken);
                 activityLoginBinding.sendOtp.setText("OTP Sent");
                 activityLoginBinding.sendOtp.setEnabled(false);
+
                 new Handler().postDelayed(() -> {
                     Intent otpIntent = new Intent(LoginActivity.this, OtpActivity.class);
                     otpIntent.putExtra("auth", s);
+                    String userName=activityLoginBinding.enterName.getText().toString();
+                    otpIntent.putExtra("userName",userName);
+                    otpIntent.putExtra("phone",phoneNumber);
                     startActivity(otpIntent);
                 }, 10000);
             }
@@ -93,11 +100,14 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+
+
     private void signIn(PhoneAuthCredential credential) {
         lAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+
                     sendToMain();
                 } else {
                     activityLoginBinding.desText.setText(task.getException().getMessage());
